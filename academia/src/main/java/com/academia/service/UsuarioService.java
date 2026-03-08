@@ -1,28 +1,34 @@
 package com.academia.service;
 
+import com.academia.domain.Checkin;
 import com.academia.domain.Usuario;
-import com.academia.dto.UsuarioAtualizarDto;
-import com.academia.dto.UsuarioCadastroDto;
-import com.academia.dto.UsuarioResponseDto;
+import com.academia.dto.*;
 import com.academia.enums.Role;
 import com.academia.enums.StatusUsuario;
 import com.academia.exception.*;
+import com.academia.repository.CheckinRepository;
 import com.academia.repository.UsuarioRepository;
+import com.academia.response.AtualizacaoUsuarioResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CheckinRepository checkinRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository,  PasswordEncoder encoder) {
+    public UsuarioService(UsuarioRepository usuarioRepository,  PasswordEncoder encoder,  CheckinRepository checkinRepository) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = encoder;
+        this.checkinRepository = checkinRepository;
     }
 
     private String gerarMatricula(){
@@ -59,12 +65,13 @@ public class UsuarioService {
         usuario.setEmail(usuarioCadastroDto.getEmail());
         usuario.setSenha(passwordEncoder.encode(usuarioCadastroDto.getSenha()));
         usuario.setMatricula(gerarMatriculaUnica());
+        usuario.setRole(Role.ROLE_USER);
         usuario.setStatusUser(StatusUsuario.ATIVADO);
 
         Usuario usuarioCadastrado =  usuarioRepository.save(usuario);
 
         return new UsuarioResponseDto(
-                usuarioCadastrado.getId_usuario(),
+                usuarioCadastrado.getId(),
                 usuarioCadastrado.getMatricula(),
                 usuarioCadastrado.getNome(),
                 usuarioCadastrado.getEmail(),
@@ -73,50 +80,77 @@ public class UsuarioService {
     }
 
     @Transactional
-    public List<UsuarioResponseDto> listarUserCadastrados(){
+    public UsuarioResponseDto cadastrarAdmi(UsuarioCadastroDto usuarioCadastroDto){
+        if(usuarioRepository.existsByEmail(usuarioCadastroDto.getEmail())) {
+            throw new EmailJaCadastradoException("Email ja cadastrado!");
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNome(usuarioCadastroDto.getNome());
+        usuario.setEmail(usuarioCadastroDto.getEmail());
+        usuario.setSenha(passwordEncoder.encode(usuarioCadastroDto.getSenha()));
+        usuario.setMatricula(gerarMatriculaUnica());
+        usuario.setRole(Role.ROLE_ADMIN);
+        usuario.setStatusUser(StatusUsuario.ATIVADO);
+
+        Usuario usuarioCadastrado =  usuarioRepository.save(usuario);
+
+        return new UsuarioResponseDto(
+                usuarioCadastrado.getId(),
+                usuarioCadastrado.getMatricula(),
+                usuarioCadastrado.getNome(),
+                usuarioCadastrado.getEmail(),
+                usuarioCadastrado.getStatusUser()
+        );
+    }
+
+    @Transactional
+    public List<UsuarioResponseAdmin> listarUserCadastrados(){
         List<Usuario> usersCadastrados = usuarioRepository.findAll();
         if(usersCadastrados.isEmpty()){
             throw new UserNaoEncontradoException("Nenhum usuário cadastrado!");
         }
 
         return usersCadastrados.stream()
-                .map(userCad -> new UsuarioResponseDto(
-                        userCad.getId_usuario(),
+                .map(userCad -> new UsuarioResponseAdmin(
+                        userCad.getId(),
                         userCad.getNome(),
                         userCad.getEmail(),
                         userCad.getMatricula(),
-                        userCad.getStatusUser()
+                        userCad.getStatusUser(),
+                        userCad.getRole()
                         )
                 ).toList();
     }
 
     @Transactional
-    public UsuarioResponseDto atualizarUsuario(Long id_usuario, UsuarioAtualizarDto usuarioAtualizarDto){
+    public AtualizacaoUsuarioResponse atualizarUsuario(Long id_usuario, UsuarioAtualizarDto usuarioAtualizarDto){
         Usuario users = usuarioRepository.findById(id_usuario).orElseThrow(() ->
                 new UserNaoEncontradoException("Usuário não encontrado!"));
-
-        if(!usuarioAtualizarDto.getEmail().equals(users.getEmail()) &&
-                usuarioRepository.existsByEmail(usuarioAtualizarDto.getEmail())) {
-            throw new EmailJaCadastradoException("Email já cadastrado!");
+        
+        boolean emailAlterado = false;
+        if(usuarioAtualizarDto.getNome() != null){
+            users.setNome(usuarioAtualizarDto.getNome());
         }
 
-        if(usuarioAtualizarDto.getEmail() == null ||
-                !usuarioAtualizarDto.getEmail().contains("@")){
-            throw new EmailInvalidoException("Email inválido!");
+        if(usuarioAtualizarDto.getEmail() != null &&!usuarioAtualizarDto.getEmail().equals(users.getEmail())) {
+            if (usuarioRepository.existsByEmail(usuarioAtualizarDto.getEmail())) {
+                throw new EmailJaCadastradoException("Email já cadastrado!");
+            }
+            users.setEmail(usuarioAtualizarDto.getEmail());
+            emailAlterado = true;
         }
-
-        users.setNome(usuarioAtualizarDto.getNome());
-        users.setEmail(usuarioAtualizarDto.getEmail());
 
         Usuario usuarioAtualizado =  usuarioRepository.save(users);
 
-        return new UsuarioResponseDto(
-                usuarioAtualizado.getId_usuario(),
+        UsuarioResponseDto dto = new UsuarioResponseDto(
+                usuarioAtualizado.getId(),
                 usuarioAtualizado.getMatricula(),
                 usuarioAtualizado.getNome(),
                 usuarioAtualizado.getEmail(),
                 usuarioAtualizado.getStatusUser()
         );
+        return new AtualizacaoUsuarioResponse(dto, emailAlterado);
     }
 
     private void senhaSeguranca(String senha){
@@ -154,11 +188,11 @@ public class UsuarioService {
         Usuario usuarioExist = usuarioRepository.findById(id_usuario)
                 .orElseThrow(() -> new UserNaoEncontradoException("Usuário não encontrado!"));
 
-        if(usuarioExist.getStatusUser() == StatusUsuario.DESATIVADO){
+        if(usuarioExist.getStatusUser().equals(StatusUsuario.DESATIVADO)){
             throw new UserJaDesativadoException("Usuário já desativado!");
         }
 
-        if(usuarioLogado.getRole() == Role.ADMIN && usuarioLogado.getId_usuario().equals(usuarioExist.getId_usuario())){
+        if(usuarioLogado.getRole().equals(Role.ROLE_ADMIN) && usuarioLogado.getId().equals(usuarioExist.getId())){
             throw new AdminiNaoPodeDesativarException("Administradores não podem desativar a própria conta!");
         }
 
@@ -170,14 +204,10 @@ public class UsuarioService {
             throw new SenhaIncorretaException("Senha incorreta!");
         }
 
-        if(usuarioLogado.getRole() != Role.ADMIN && !usuarioLogado.getId_usuario().equals(usuarioExist.getId_usuario())){
-            throw new UserNaoPodeApagarException("Você não tem permissão para desativar esse usuário!");
-        }
-
         usuarioExist.setStatusUser(StatusUsuario.DESATIVADO);
 
         return new UsuarioResponseDto(
-                usuarioExist.getId_usuario(),
+                usuarioExist.getId(),
                 usuarioExist.getMatricula(),
                 usuarioExist.getNome(),
                 usuarioExist.getEmail(),
@@ -191,11 +221,11 @@ public class UsuarioService {
         Usuario userExist = usuarioRepository.findById(id_usuario)
                 .orElseThrow(() -> new EmailJaCadastradoException("Usuário já apagado ou não existe!"));
 
-        if(usuarioLogado.getRole() != Role.ADMIN){
+        if(!usuarioLogado.getRole().equals(Role.ROLE_ADMIN)){
             throw new AdminApagarContaException("Somente administradores podem apagar contas!");
         }
 
-        if(usuarioLogado.getId_usuario().equals(userExist.getId_usuario())){
+        if(usuarioLogado.getId().equals(userExist.getId())){
             throw new AdminNaoApagarContaException("Administradores não podem apagar a própria conta!");
         }
 
@@ -208,5 +238,33 @@ public class UsuarioService {
         }
 
         usuarioRepository.delete(userExist);
+    }
+
+    @Transactional
+    public CheckinResponseDto checkinUsuario(Usuario usuarioLogado){
+        Optional<Checkin> checkinAtivo = checkinRepository.findByUsuarioAndCheckoutIsNull(usuarioLogado);
+        if(checkinAtivo.isPresent()){
+            throw new IllegalArgumentException("Você já tem um check-in ativo!");
+        }
+
+        Optional<Checkin> ultimoCheckin = checkinRepository.findTopByUsuarioOrderByCheckinDesc(usuarioLogado);
+        if(ultimoCheckin.isPresent() && ultimoCheckin.get().getCheckin().toLocalDate().equals(LocalDate.now())){
+            throw new IllegalArgumentException("Você só pode fazer um checkin por dia!");
+        }
+
+        Checkin criarCheckin = new Checkin();
+
+        criarCheckin.setUsuario(usuarioLogado);
+        criarCheckin.setCheckin(LocalDateTime.now());
+
+        checkinRepository.save(criarCheckin);
+
+        return new CheckinResponseDto(
+                usuarioLogado.getNome(),
+                usuarioLogado.getId(),
+                criarCheckin.getCheckin(),
+                criarCheckin.getCheckout()
+        );
+
     }
 }
