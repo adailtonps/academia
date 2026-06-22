@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UsuarioAtualizarDto {
     private String nome;
-    private String email;
+    private String emailAlterado;
 
 }

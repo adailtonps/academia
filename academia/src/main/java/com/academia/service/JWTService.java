@@ -41,25 +41,11 @@ public class JWTService {
                 .compact();
     }
 
-    public String validarToken(String token){
-        try{
-            return Jwts.parserBuilder()
-                    .setSigningKey(chaveSecreta)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
-        } catch (Exception e){
-            return null;
-        }
-    }
-
     public Claims getClaims(String token){
         return Jwts.parserBuilder()
                 .setSigningKey(chaveSecreta)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
     }
 }

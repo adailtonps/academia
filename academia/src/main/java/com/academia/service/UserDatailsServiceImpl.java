@@ -1,7 +1,6 @@
 package com.academia.service;
 
 import com.academia.domain.Usuario;
-import com.academia.exception.UserNaoEncontradoException;
 import com.academia.repository.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

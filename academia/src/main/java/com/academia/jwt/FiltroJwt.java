@@ -26,41 +26,45 @@ public class FiltroJwt extends OncePerRequestFilter {
         this.jwtService = jwtService;
     }
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
-                        throws ServletException, IOException {
+            throws ServletException, IOException {
         SecurityContextHolder.clearContext();
 
-        String header = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.replace("Bearer ", "");
+        String token = null;
 
-            var claims = jwtService.getClaims(token);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
 
-            String email = claims.getSubject();
-            String role = claims.get("role", String.class);
+        if (token != null) {
+            try {
+                var claims = jwtService.getClaims(token);
+                String email = claims.getSubject();
+                String role = claims.get("role").toString();
 
-            if (email != null && role != null) {
+                if (email != null && role != null) {
+                    Usuario usuario = usuarioRepository
+                            .findByEmail(email)
+                            .orElse(null);
 
-                Usuario usuario = usuarioRepository
-                        .findByEmail(email)
-                        .orElse(null);
-
-                if(usuario != null) {
-                    var authorities = List.of(new SimpleGrantedAuthority(role));
-
-                    var authentication = new UsernamePasswordAuthenticationToken(
-                            usuario,
-                            null,
-                            authorities);
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    if (usuario != null) {
+                        var authorities = List.of(new SimpleGrantedAuthority(role));
+                        var authentication = new UsernamePasswordAuthenticationToken(
+                                usuario,
+                                null,
+                                authorities
+                        );
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
-                }
+            } catch (Exception e) {
+                System.out.println("Token inválido!");
+            }
         }
         filterChain.doFilter(request, response);
     }

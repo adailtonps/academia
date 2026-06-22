@@ -20,6 +20,7 @@ public class Checkin {
     private Long id_checkin;
 
     private LocalDateTime checkin;
+
     private LocalDateTime checkout;
 
     @ManyToOne

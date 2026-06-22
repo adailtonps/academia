@@ -27,32 +27,35 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
+    @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UsuarioResponseAdmin>> listarUsuario() {
         List<UsuarioResponseAdmin> listaDeUsersCadastrados = usuarioService.listarUserCadastrados();
         return ResponseEntity.ok(listaDeUsersCadastrados);
     }
 
-    @PutMapping("/me")
-    public ResponseEntity<?> atualizarUsuario(
+    @PutMapping("/me/atualizar")
+    public ResponseEntity<AtualizacaoUsuarioResponse> atualizarUsuario(
             @RequestBody UsuarioAtualizarDto  usuarioAtualizarDto,
             @AuthenticationPrincipal Usuario usuarioLogado){
 
         AtualizacaoUsuarioResponse response = usuarioService.atualizarUsuario(usuarioLogado.getId(), usuarioAtualizarDto);
 
-        if(response.isEmailAlterado()){
-            return ResponseEntity.ok(
-                    "Email atualizado. Faça login novamente!");
-        }
-        return ResponseEntity.ok(response.getUsuario());
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/{me}/checkin")
-    public ResponseEntity<String> fazerCheckin(@AuthenticationPrincipal Usuario usuarioLogado){
+    @PostMapping("/me/checkin")
+    public ResponseEntity<MensageReturnDto> fazerCheckin(@AuthenticationPrincipal Usuario usuarioLogado){
         usuarioService.checkinUsuario(usuarioLogado);
-        return ResponseEntity.ok("Checkin feito com sucesso! Não se esqueça de fazer o checkout.");
+        return ResponseEntity.ok(new MensageReturnDto("Checkin feito com sucesso! Não se esqueça de fazer o checkout."));
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("me/checkout")
+    public ResponseEntity<MensageReturnDto> fazerCheckout(@AuthenticationPrincipal Usuario usuarioLogado){
+        usuarioService.checkoutUsuario(usuarioLogado);
+        return ResponseEntity.ok(new MensageReturnDto("Checkout feito com sucesso!"));
     }
 
     @PatchMapping("/{id}/desativar")
@@ -61,10 +64,34 @@ public class UsuarioController {
         return ResponseEntity.ok(userDesativar);
     }
 
+    @PatchMapping("/{id}/ativar")
+    public ResponseEntity<UsuarioResponseDto> ativarUsuario(@PathVariable Long id, @RequestBody ConfirmarSenhaDto confirmarSenhaDto,  @AuthenticationPrincipal Usuario usuarioLogado){
+        UsuarioResponseDto userAtivar = usuarioService.ativarUsuario(id, confirmarSenhaDto.getSenha(), usuarioLogado);
+        return ResponseEntity.ok(userAtivar);
+    }
+
+    @GetMapping("/me/listarCheckins")
+    public ResponseEntity<List<CheckinResponseDto>> listarCheckins(@AuthenticationPrincipal Usuario usuarioLogado){
+        List<CheckinResponseDto> checkinsPresentes = usuarioService.historicoCheckins(usuarioLogado);
+        return ResponseEntity.ok(checkinsPresentes);
+    }
+
+    @GetMapping("/me/listarCheckinsTodos")
+    public ResponseEntity<List<CheckinResponseDto>> listarCheckinsTodos(@AuthenticationPrincipal Usuario usuarioLogado){
+        List<CheckinResponseDto> checkinsPresentes = usuarioService.historicoCheckinTodos(usuarioLogado);
+        return ResponseEntity.ok(checkinsPresentes);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUsuario(@PathVariable Long id, @RequestBody ConfirmarSenhaDto confirmarSenha, @AuthenticationPrincipal Usuario usuarioLogado){
+    public ResponseEntity<MensageReturnDto> deleteUsuario(@PathVariable Long id, @RequestBody ConfirmarSenhaDto confirmarSenha, @AuthenticationPrincipal Usuario usuarioLogado){
         usuarioService.apagarUsuario(id,  confirmarSenha.getSenha(),  usuarioLogado);
-        return ResponseEntity.ok("Usuário apagado com sucesso!");
+        return ResponseEntity.ok(new MensageReturnDto("Usuário apagado com sucesso!"));
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/me/minhaConta")
+    public UsuarioResponseDto minhaConta(@AuthenticationPrincipal Usuario usuarioLogado){
+        return usuarioService.minhaConta(usuarioLogado);
     }
 }

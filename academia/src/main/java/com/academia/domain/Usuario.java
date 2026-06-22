@@ -1,6 +1,7 @@
 package com.academia.domain;
 
 import com.academia.enums.StatusUsuario;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -77,18 +78,19 @@ public class Usuario implements UserDetails {
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    private StatusUsuario statusUser;
+    @JsonProperty("status_user")
+    private StatusUsuario status_user;
 
     @OneToMany(mappedBy = "usuario")
     private List<Checkin> checkin;
 
-    public Usuario(String nome, String email, String matricula, String senha, Role role, StatusUsuario statusUser, List<Checkin> checkin) {
+    public Usuario(String nome, String email, String matricula, String senha, Role role, StatusUsuario status_user, List<Checkin> checkin) {
         this.nome = nome;
         this.email = email;
         this.matricula = matricula;
         this.senha = senha;
         this.role = role;
-        this.statusUser = statusUser;
+        this.status_user = status_user;
         this.checkin = checkin;
     }
 }
