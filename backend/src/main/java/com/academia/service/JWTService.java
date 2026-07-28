@@ -17,7 +17,7 @@ public class JWTService {
 
     public JWTService(
             @Value("${jwt.secret}") String secret,
-            @Value ("${jwt.expiracao}") long expiracao
+            @Value ("${jwt.expiration}") long expiracao
     ) {
         this.chaveSecreta = Keys.hmacShaKeyFor(secret.getBytes());
         this.expiracao = expiracao;
