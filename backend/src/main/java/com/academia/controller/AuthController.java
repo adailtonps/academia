@@ -32,36 +32,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginDto) {
-
-        System.out.println("1 - Login recebido: " + loginDto.getEmail());
-
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
                         loginDto.getSenha()
                 )
         );
-
-        System.out.println("2 - Autenticação realizada com sucesso");
-
-        try {
-            System.out.println("2.1 - Entrando no gerarToken");
-
-            String jwt = jwtService.gerarToken(authentication);
-
-            System.out.println("3 - JWT gerado com sucesso");
-
-            return ResponseEntity.ok(
-                    new LoginResponseDto(
-                            "login realizado com sucesso!",
-                            jwt
-                    )
-            );
-
-        } catch (Exception e) {
-            System.out.println("ERRO AO GERAR O JWT:");
-            e.printStackTrace();
-
-            throw e;
-        }
-}}
+        String jwt = jwtService.gerarToken(authentication);
+        return ResponseEntity.ok(new LoginResponseDto("login realizado com sucesso!",jwt));
+    }
+}
