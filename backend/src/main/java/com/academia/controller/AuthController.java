@@ -32,13 +32,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginDto) {
+        System.out.println("1 - Login recebido: " + loginDto.getEmail());
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
                         loginDto.getSenha()
                 )
         );
+        System.out.println("2 - Autenticação realizada com sucesso");
         String jwt = jwtService.gerarToken(authentication);
+        System.out.println("3 - JWT gerado com sucesso");
         return ResponseEntity.ok(new LoginResponseDto("login realizado com sucesso!",jwt));
     }
 }
