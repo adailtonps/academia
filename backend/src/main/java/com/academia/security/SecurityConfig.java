@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/admin").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/auth/cadastro").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/usuario/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/usuario/me/minhaConta").hasRole("USER")
