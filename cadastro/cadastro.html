@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="cadastro.css">
+    <title>Cadastrar - Academia</title>
+</head>
+<body>
+    <section class="card">
+    <h1 id="titulo1">Olá. Crie sua conta aqui: </h1>
+
+    <form id="formCadastro">
+        <input type="email" name="email" id="email" placeholder="Digite o seu email" required>
+        <input type="text" name="nome" id="nome" placeholder="Digite o seu nome" required>
+        <input type="password" name="senha" id="senha" placeholder="Digite a sua senha" required>
+
+        <div class="botoes">
+            <button type="submit" id="cadastro">Cadastrar</button>
+            <button type="button" id="possuiConta">Já possui conta?</button>
+        </div>
+    </form>
+    <div id="msg"></div>
+    </section>
+    <script src="cadastro.js"></script>
+
+    <footer>
+        <p> &copy;Adailton Pereira</p>
+    </footer>
+</body>
+</html>
