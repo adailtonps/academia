@@ -30,6 +30,9 @@ public class SecurityConfig {
     @Value("${frontend.url}")
     private String frontendUrl;
 
+    @Value("${backend.url}")
+    private String backendUrl;
+
     @Bean
     public AuthenticationManager authenticationManager(
         AuthenticationConfiguration authenticationConfiguration
@@ -69,6 +72,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://127.0.0.1:5500",
+                "http://localhost:5500",
+                backendUrl,
                 frontendUrl
                 ));
         configuration.setAllowedMethods(Arrays.asList(
