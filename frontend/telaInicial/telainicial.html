@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela Inicial - Academia</title>
+    <link href="telainicial.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <section id="card">
+        <h1>Olá, selecione o que deseja fazer: </h1>
+        <div class="botoes">
+            <button id="btnListarUser" type="button">Consultar</button>
+            <button id="btnFazerCheckin" type="button">Checkin/Checkout</button>
+            <button id="btnListarCheckins" type="button">Listar Checkins</button>
+            <button id="btnListarCheckinsTodos" type="button">Listar Checkins</button>
+            <button id="btnDesativarAtivarUser" type="button">Desativar/Ativar</button>
+            <button id="btnDeletarUser" type="button">Apagar Users</button>
+            <button id="btnCriarAdmin" type="button">Criar Admin</button>
+            <button id="btnMinhaConta" type="button">Minha Conta</button>
+            <button id="btnAtualizarAdmin" type="button">Atualizar Dados</button>
+            <button id="btnSairDaConta" type="button">Sair da Conta</button>
+        </div>
+
+        <div id="listarUser" class="secao" style="display: none;">
+            <h2>Usuários Cadastrados: </h2>
+            <table border="1">
+                <thead>
+                    <tr><!--linha-->
+                        <th>ID </th> <!--coluna(cabeçalho)-->
+                        <th>Nome </th>
+                        <th>Email </th>
+                        <th>Matrícula </th>
+                        <th>Role </th>
+                        <th>Status </th>
+                    </tr>
+                </thead>
+
+                <tbody id="dadosTabela">
+
+                </tbody>
+            </table>
+            <p id="msgListarUser"></p>
+        </div>
+
+        <div id="fazerCheckin" class="secao" style="display: none;">
+            <h2>Fazer Checkin e Checkout</h2>
+            <button id="confirmarCheckin" type="button">Checkin</button>
+            <button id="confirmarCheckout" type="button">Checkout</button>
+            <p id="msgCheckin">Clique no botão acima e faça o seu checkin. Não esqueça de fazer o checkout!</p>
+        </div>
+
+        <div id="listarCheckins" class="secao" style="display: none;">
+            <h2>Listar Checkins</h2>
+            <p id="msgListarCheckin"></p>
+        </div>
+
+        <div id="listarCheckinsTodos" class="secao" style="display: none;">
+            <h2>Listar Checkins</h2>
+            <p id="msgListarCheckinTodos"></p>
+        </div>
+
+        <div id="desativarAtivarUser" class="secao" style="display: none;">
+            <h2>Desativar Usuário: </h2>
+            <input type="number" required id="idDesativarAtivar" placeholder="Digite o id do user">
+            <input type="password" required id="confirmarSenha" placeholder="Digite a sua senha">
+            <p id="msgDesativar"></p>
+            <button id="confirmarDesativar" type="button">Desativar</button>
+            <button id="confirmarAtivar" type="button">Ativar</button>
+        </div>
+
+        <form id="deletarUser" class="secao" style="display: none;">
+            <h2>Apagar Usuário: </h2>
+            <input type="number" required id="idApagar" placeholder="Digite o ID do usuário que deseja apagar:">
+            <input type="password" required id="confirmarSenha2" placeholder="Digite a sua senha">
+            <button id="confirmarDelete" type="button">Apagar</button>
+            <p id="msgDeletar"></p>
+        </form>
+
+        <form id="criarAdmin" class="secao" style="display: none;">
+            <h2>Criar Admin: </h2>
+            <input type="text" id="nome" required placeholder="Digite o nome">
+            <input type="email" id="email" required placeholder="Digite o email">
+            <input type="password" id="senhaAdmin" required placeholder="Crie a senha">
+            <button id="confirmarCriarAdmin" type="button">Criar Admin</button>
+            <p id="msgCriarAdmin"></p>
+        </form>
+
+        <div id="minhaConta" class="secao" style="display: none;">
+            <h2>Minha Conta: </h2>
+            <p id="msgMinhaConta"></p>
+        </div>
+
+        <form id="atualizarUser" class="secao" style="display: none;">
+            <h2>Atualizar meus dados: </h2>
+            <input type="email" id="emailAtualizar" required placeholder="Digite o novo email">
+            <input type="text" id="nomeAtualizar" required placeholder="Digite o novo nome">
+            <button id="confirmarAtualizacao" type="button">Atualizar</button>
+            <p id="msgAlerta">
+                AO ATUALIZAR O EMAIL, VOCÊ SERÁ REDIRECIONADO PARA A TELA DE LOGIN, FAÇA LOGIN COM O NOVO EMAIL!<br>
+                Caso deseje atualizar somente uma informação, digite no campo que deseja atualizar e deixe o outro em branco.
+            </p>
+        </form>
+
+        </div>
+    </section>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
