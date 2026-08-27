@@ -4,7 +4,7 @@ const form = document.getElementById("formCadastro");
 const url = "https://academia-2rp0.onrender.com"
 
 document.getElementById("possuiConta").addEventListener("click", () => {
-    window.location.href="../login/login.html"
+    window.location.href="login/login.html"
 })
 
 const endpoints = {
@@ -38,7 +38,7 @@ try {
     msg.style.color="green";
 
     setTimeout(() => {
-        window.location.href = "../login/login.html"
+        window.location.href = "login/login.html"
     }, 1500);
 
     form.reset();
