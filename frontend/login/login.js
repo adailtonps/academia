@@ -2,7 +2,7 @@ const msg = document.getElementById("msg")
 const formLogin = document.getElementById("formLogin")
 
 document.getElementById("cadastrar").addEventListener("click", () => {
-    window.location.href="../cadastro/cadastro.html"
+    window.location.href="../index.html"
 })
 
 
