@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthAdmiController {
     private final UsuarioService usuarioService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin")
     public ResponseEntity<UsuarioResponseDto> cadastrarAdmin(@RequestBody UsuarioCadastroDto usuarioCadastroDto){
         UsuarioResponseDto user =  usuarioService.cadastrarAdmi(usuarioCadastroDto);
