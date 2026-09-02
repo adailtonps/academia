@@ -61,7 +61,7 @@ public class UsuarioService {
         }
 
         Usuario usuario = new Usuario();
-        usuario.setNome(usuarioCadastroDto.getNome());
+        usuario.setNome(usuarioCadastroDto.getNome().toUpperCase());
         usuario.setEmail(usuarioCadastroDto.getEmail());
         usuario.setSenha(passwordEncoder.encode(usuarioCadastroDto.getSenha()));
         usuario.setMatricula(gerarMatriculaUnica());
@@ -86,7 +86,7 @@ public class UsuarioService {
         }
 
         Usuario usuario = new Usuario();
-        usuario.setNome(usuarioCadastroDto.getNome());
+        usuario.setNome(usuarioCadastroDto.getNome().toUpperCase());
         usuario.setEmail(usuarioCadastroDto.getEmail());
         usuario.setSenha(passwordEncoder.encode(usuarioCadastroDto.getSenha()));
         usuario.setMatricula(gerarMatriculaUnica());
@@ -131,7 +131,7 @@ public class UsuarioService {
         
         boolean emailAlterado = false;
         if(usuarioAtualizarDto.getNome() != null && !usuarioAtualizarDto.getNome().isBlank()){
-            users.setNome(usuarioAtualizarDto.getNome());
+            users.setNome(usuarioAtualizarDto.getNome().toUpperCase());
         }
 
         if(usuarioAtualizarDto.getEmailAlterado() != null && !usuarioAtualizarDto.getEmailAlterado().isBlank() && !usuarioAtualizarDto.getEmailAlterado().equals(users.getEmail())) {
