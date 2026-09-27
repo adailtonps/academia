@@ -2,6 +2,7 @@ package com.academia.controller;
 
 import com.academia.dto.UsuarioCadastroDto;
 import com.academia.dto.UsuarioResponseDto;
+import com.academia.service.AdminService;
 import com.academia.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,14 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RequestMapping("/auth")
 public class AuthAdmiController {
-    private final UsuarioService usuarioService;
+    private final AdminService adminService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin")
     public ResponseEntity<UsuarioResponseDto> cadastrarAdmin(@RequestBody UsuarioCadastroDto usuarioCadastroDto){
-        UsuarioResponseDto user =  usuarioService.cadastrarAdmi(usuarioCadastroDto);
+        UsuarioResponseDto user =  adminService.cadastrarAdmi(usuarioCadastroDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
-
-
 }

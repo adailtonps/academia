@@ -27,13 +27,6 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping("/users")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UsuarioResponseAdmin>> listarUsuario() {
-        List<UsuarioResponseAdmin> listaDeUsersCadastrados = usuarioService.listarUserCadastrados();
-        return ResponseEntity.ok(listaDeUsersCadastrados);
-    }
-
     @PutMapping("/me/atualizar")
     public ResponseEntity<AtualizacaoUsuarioResponse> atualizarUsuario(
             @RequestBody UsuarioAtualizarDto  usuarioAtualizarDto,
@@ -74,19 +67,6 @@ public class UsuarioController {
     public ResponseEntity<List<CheckinResponseDto>> listarCheckins(@AuthenticationPrincipal Usuario usuarioLogado){
         List<CheckinResponseDto> checkinsPresentes = usuarioService.historicoCheckins(usuarioLogado);
         return ResponseEntity.ok(checkinsPresentes);
-    }
-
-    @GetMapping("/me/listarCheckinsTodos")
-    public ResponseEntity<List<CheckinResponseDto>> listarCheckinsTodos(@AuthenticationPrincipal Usuario usuarioLogado){
-        List<CheckinResponseDto> checkinsPresentes = usuarioService.historicoCheckinTodos(usuarioLogado);
-        return ResponseEntity.ok(checkinsPresentes);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<MensageReturnDto> deleteUsuario(@PathVariable Long id, @RequestBody ConfirmarSenhaDto confirmarSenha, @AuthenticationPrincipal Usuario usuarioLogado){
-        usuarioService.apagarUsuario(id,  confirmarSenha.getSenha(),  usuarioLogado);
-        return ResponseEntity.ok(new MensageReturnDto("Usuário apagado com sucesso!"));
     }
 
     @PreAuthorize("hasRole('USER')")

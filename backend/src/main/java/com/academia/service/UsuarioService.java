@@ -9,12 +9,15 @@ import com.academia.exception.*;
 import com.academia.repository.CheckinRepository;
 import com.academia.repository.UsuarioRepository;
 import com.academia.response.AtualizacaoUsuarioResponse;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -79,50 +82,7 @@ public class UsuarioService {
         );
     }
 
-    @Transactional
-    public UsuarioResponseDto cadastrarAdmi(UsuarioCadastroDto usuarioCadastroDto){
-        if(usuarioRepository.existsByEmail(usuarioCadastroDto.getEmail())) {
-            throw new RegraNegocioException("Email já cadastrado!");
-        }
 
-        Usuario usuario = new Usuario();
-        usuario.setNome(usuarioCadastroDto.getNome().toUpperCase());
-        usuario.setEmail(usuarioCadastroDto.getEmail());
-        usuario.setSenha(passwordEncoder.encode(usuarioCadastroDto.getSenha()));
-        usuario.setMatricula(gerarMatriculaUnica());
-        usuario.setRole(Role.ROLE_ADMIN);
-        usuario.setStatus_user(StatusUsuario.ATIVADO);
-
-        senhaSeguranca(usuarioCadastroDto.getSenha());
-        Usuario usuarioCadastrado =  usuarioRepository.save(usuario);
-
-        return new UsuarioResponseDto(
-                usuarioCadastrado.getId(),
-                usuarioCadastrado.getMatricula(),
-                usuarioCadastrado.getNome(),
-                usuarioCadastrado.getEmail(),
-                usuarioCadastrado.getStatus_user()
-        );
-    }
-
-    @Transactional
-    public List<UsuarioResponseAdmin> listarUserCadastrados(){
-        List<Usuario> usersCadastrados = usuarioRepository.findAll();
-        if(usersCadastrados.isEmpty()){
-            throw new UserNaoEncontradoException("Nenhum usuário cadastrado!");
-        }
-
-        return usersCadastrados.stream()
-                .map(userCad -> new UsuarioResponseAdmin(
-                        userCad.getId(),
-                        userCad.getNome(),
-                        userCad.getEmail(),
-                        userCad.getMatricula(),
-                        userCad.getStatus_user(),
-                        userCad.getRole()
-                        )
-                ).toList();
-    }
 
     @Transactional
     public AtualizacaoUsuarioResponse atualizarUsuario(Long id_usuario, UsuarioAtualizarDto usuarioAtualizarDto){
@@ -267,34 +227,6 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void apagarUsuario(Long id_usuario, String senha, Usuario usuarioLogado){
-        Usuario userExist = usuarioRepository.findById(id_usuario)
-                .orElseThrow(() -> new UserNaoEncontradoException("Usuário já apagado ou não existe!"));
-
-        if(userExist.getStatus_user().equals(StatusUsuario.ATIVADO)){
-            throw new RegraNegocioException("Desative a conta antes de apagar!");
-        }
-
-        if(!usuarioLogado.getRole().equals(Role.ROLE_ADMIN)){
-            throw new RegraNegocioException("Somente administradores podem apagar contas!");
-        }
-
-        if(usuarioLogado.getId().equals(userExist.getId())){
-            throw new RegraNegocioException("Administradores não podem apagar a própria conta!");
-        }
-
-        if(senha == null || senha.isBlank()){
-            throw new RegraNegocioException("Senha obrigatória!");
-        }
-
-        if(!passwordEncoder.matches(senha, usuarioLogado.getSenha())){
-            throw new RegraNegocioException("Senha incorreta!");
-        }
-        checkinRepository.deleteByUsuario_id(userExist.getId());
-        usuarioRepository.delete(userExist);
-    }
-
-    @Transactional
     public CheckinResponseDto checkinUsuario(Usuario usuarioLogado){
         Optional<Checkin> checkinAtivo = checkinRepository.findByUsuarioAndCheckoutIsNull(usuarioLogado);
         if(usuarioLogado.getStatus_user().equals(StatusUsuario.DESATIVADO)){
@@ -339,6 +271,9 @@ public class UsuarioService {
         Checkin checkin =  checkinAtivo.get();
 
         checkin.setCheckout(LocalDateTime.now());
+
+        Duration tempoDePermanencia = Duration.between(checkin.getCheckin(), checkin.getCheckout());
+        checkin.setTempoDePermanencia(tempoDePermanencia);
         checkinRepository.save(checkin);
 
         return new CheckoutResponse(
@@ -348,22 +283,6 @@ public class UsuarioService {
                 checkin.getCheckout(),
                 checkin.getCheckin()
         );
-    }
-
-    public List<CheckinResponseDto> historicoCheckinTodos(Usuario usuarioLogado){
-        List<Checkin> checkins = checkinRepository.findAll();
-        if(checkins.isEmpty()){
-            throw new RegraNegocioException("Nenhum checkin cadastrado!");
-        }
-        return checkins.stream()
-                .map(checkinsPresent -> new CheckinResponseDto(
-                        checkinsPresent.getUsuario().getNome(),
-                        checkinsPresent.getUsuario().getEmail(),
-                        checkinsPresent.getUsuario().getId(),
-                        checkinsPresent.getId_checkin(),
-                        checkinsPresent.getCheckin(),
-                        checkinsPresent.getCheckout()
-                )).toList();
     }
 
     public List<CheckinResponseDto> historicoCheckins(Usuario usuarioLogado) {

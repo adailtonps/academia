@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @AllArgsConstructor
@@ -22,6 +24,8 @@ public class Checkin {
     private LocalDateTime checkin;
 
     private LocalDateTime checkout;
+
+    private Duration tempoDePermanencia;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
