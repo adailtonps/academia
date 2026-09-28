@@ -3,13 +3,13 @@ package com.academia.service;
 import com.academia.domain.Checkin;
 import com.academia.domain.Usuario;
 import com.academia.dto.*;
+import java.time.ZoneId;
 import com.academia.enums.Role;
 import com.academia.enums.StatusUsuario;
 import com.academia.exception.*;
 import com.academia.repository.CheckinRepository;
 import com.academia.repository.UsuarioRepository;
 import com.academia.response.AtualizacaoUsuarioResponse;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -229,11 +229,6 @@ public class UsuarioService {
     @Transactional
     public CheckinResponseDto checkinUsuario(Usuario usuarioLogado){
 
-        System.out.println("===== CHECK-IN =====");
-        System.out.println("Usuário: " + usuarioLogado.getEmail());
-        System.out.println("Data/hora do servidor: " + LocalDateTime.now());
-        System.out.println("Data do servidor: " + LocalDate.now());
-
         Optional<Checkin> checkinAtivo =
                 checkinRepository.findByUsuarioAndCheckoutIsNull(usuarioLogado);
 
@@ -241,31 +236,26 @@ public class UsuarioService {
             throw new RegraNegocioException("Conta inativa!");
         }
 
+        // Já existe um check-in sem checkout
         if(checkinAtivo.isPresent()){
-            System.out.println("Existe check-in ativo!");
             throw new RegraNegocioException("Você já tem um check-in ativo!");
         }
 
         Optional<Checkin> ultimoCheckin =
                 checkinRepository.findTopByUsuarioOrderByCheckinDesc(usuarioLogado);
 
-        if(ultimoCheckin.isPresent()) {
+        ZoneId zonaBrasil = ZoneId.of("America/Sao_Paulo");
+        LocalDate dataAtualBrasil = LocalDate.now(zonaBrasil);
 
-            System.out.println("Último check-in: "
-                    + ultimoCheckin.get().getCheckin());
+        if (ultimoCheckin.isPresent()) {
 
-            System.out.println("Data último check-in: "
-                    + ultimoCheckin.get().getCheckin().toLocalDate());
+            LocalDate dataUltimoCheckinBrasil = ultimoCheckin.get()
+                    .getCheckin()
+                    .atZone(ZoneId.of("UTC"))
+                    .withZoneSameInstant(zonaBrasil)
+                    .toLocalDate();
 
-            System.out.println("Data atual: "
-                    + LocalDate.now());
-
-            if(ultimoCheckin.get().getCheckin()
-                    .toLocalDate()
-                    .equals(LocalDate.now())) {
-
-                System.out.println("ENTROU NA REGRA DE UM CHECK-IN POR DIA!");
-
+            if (dataUltimoCheckinBrasil.equals(dataAtualBrasil)) {
                 throw new RegraNegocioException(
                         "Você só pode fazer um checkin por dia!"
                 );

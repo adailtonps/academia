@@ -39,20 +39,9 @@ public class UsuarioController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/me/checkin")
-    public ResponseEntity<MensageReturnDto> fazerCheckin(
-            @AuthenticationPrincipal Usuario usuarioLogado){
-
-        System.out.println("========== CHEGOU NO CONTROLLER CHECKIN ==========");
-
-        System.out.println("Usuário recebido: " + usuarioLogado);
-
+    public ResponseEntity<MensageReturnDto> fazerCheckin(@AuthenticationPrincipal Usuario usuarioLogado){
         usuarioService.checkinUsuario(usuarioLogado);
-
-        return ResponseEntity.ok(
-                new MensageReturnDto(
-                        "Checkin feito com sucesso! Não se esqueça de fazer o checkout."
-                )
-        );
+        return ResponseEntity.ok(new MensageReturnDto("Checkin feito com sucesso! Não se esqueça de fazer o checkout."));
     }
 
     @PreAuthorize("hasRole('USER')")
