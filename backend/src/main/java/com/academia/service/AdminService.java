@@ -78,10 +78,6 @@ public class AdminService {
 
     @Transactional
     public List<UsuarioResponseAdmin> listarUserCadastrados(){
-        List<Usuario> usersCadastrados = usuarioRepository.findAll();
-        if(usersCadastrados.isEmpty()){
-            throw new UserNaoEncontradoException("Nenhum usuário cadastrado!");
-        }
 
         return List.of(
                 new UsuarioResponseAdmin(
