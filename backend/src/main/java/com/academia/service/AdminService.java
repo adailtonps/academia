@@ -76,7 +76,6 @@ public class AdminService {
         }
     }
 
-    @Transactional
     public List<UsuarioResponseAdmin> listarUserCadastrados(){
 
         return List.of(
