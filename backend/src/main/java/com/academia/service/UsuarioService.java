@@ -228,18 +228,48 @@ public class UsuarioService {
 
     @Transactional
     public CheckinResponseDto checkinUsuario(Usuario usuarioLogado){
-        Optional<Checkin> checkinAtivo = checkinRepository.findByUsuarioAndCheckoutIsNull(usuarioLogado);
+
+        System.out.println("===== CHECK-IN =====");
+        System.out.println("Usuário: " + usuarioLogado.getEmail());
+        System.out.println("Data/hora do servidor: " + LocalDateTime.now());
+        System.out.println("Data do servidor: " + LocalDate.now());
+
+        Optional<Checkin> checkinAtivo =
+                checkinRepository.findByUsuarioAndCheckoutIsNull(usuarioLogado);
+
         if(usuarioLogado.getStatus_user().equals(StatusUsuario.DESATIVADO)){
             throw new RegraNegocioException("Conta inativa!");
         }
 
         if(checkinAtivo.isPresent()){
+            System.out.println("Existe check-in ativo!");
             throw new RegraNegocioException("Você já tem um check-in ativo!");
         }
 
-        Optional<Checkin> ultimoCheckin = checkinRepository.findTopByUsuarioOrderByCheckinDesc(usuarioLogado);
-        if(ultimoCheckin.isPresent() && ultimoCheckin.get().getCheckin().toLocalDate().equals(LocalDate.now())){
-            throw new RegraNegocioException("Você só pode fazer um checkin por dia!");
+        Optional<Checkin> ultimoCheckin =
+                checkinRepository.findTopByUsuarioOrderByCheckinDesc(usuarioLogado);
+
+        if(ultimoCheckin.isPresent()) {
+
+            System.out.println("Último check-in: "
+                    + ultimoCheckin.get().getCheckin());
+
+            System.out.println("Data último check-in: "
+                    + ultimoCheckin.get().getCheckin().toLocalDate());
+
+            System.out.println("Data atual: "
+                    + LocalDate.now());
+
+            if(ultimoCheckin.get().getCheckin()
+                    .toLocalDate()
+                    .equals(LocalDate.now())) {
+
+                System.out.println("ENTROU NA REGRA DE UM CHECK-IN POR DIA!");
+
+                throw new RegraNegocioException(
+                        "Você só pode fazer um checkin por dia!"
+                );
+            }
         }
 
         Checkin criarCheckin = new Checkin();
@@ -257,7 +287,6 @@ public class UsuarioService {
                 criarCheckin.getCheckin(),
                 criarCheckin.getCheckout()
         );
-
     }
 
     @Transactional
