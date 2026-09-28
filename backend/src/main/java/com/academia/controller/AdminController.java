@@ -17,15 +17,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class AdminController {
-    private UsuarioService usuarioService;
-    private UsuarioRepository usuarioRepository;
-    private AdminService adminService;
+    private final UsuarioService usuarioService;
+    private final UsuarioRepository usuarioRepository;
+    private final AdminService adminService;
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UsuarioResponseAdmin>> listarUsuario() {
         List<UsuarioResponseAdmin> listaDeUsersCadastrados = adminService.listarUserCadastrados();
-        System.out.println("========== CHEGOU NO CONTROLLER ==========");
 
         return ResponseEntity.ok(listaDeUsersCadastrados);
     }

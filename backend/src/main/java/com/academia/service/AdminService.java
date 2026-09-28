@@ -76,18 +76,23 @@ public class AdminService {
         }
     }
 
+    @Transactional
     public List<UsuarioResponseAdmin> listarUserCadastrados(){
+        List<Usuario> usersCadastrados = usuarioRepository.findAll();
+        if(usersCadastrados.isEmpty()){
+            throw new UserNaoEncontradoException("Nenhum usuário cadastrado!");
+        }
 
-        return List.of(
-                new UsuarioResponseAdmin(
-                        1L,
-                        "12093",
-                        "teste",
-                        "teste@email.com",
-                        StatusUsuario.ATIVADO,
-                        Role.ROLE_ADMIN
-                )
-        );
+        return usersCadastrados.stream()
+                .map(userCad -> new UsuarioResponseAdmin(
+                                userCad.getId(),
+                                userCad.getNome(),
+                                userCad.getEmail(),
+                                userCad.getMatricula(),
+                                userCad.getStatus_user(),
+                                userCad.getRole()
+                        )
+                ).toList();
     }
 
     @Transactional
