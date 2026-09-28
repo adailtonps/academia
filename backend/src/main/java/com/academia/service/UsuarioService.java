@@ -272,8 +272,15 @@ public class UsuarioService {
 
         checkin.setCheckout(LocalDateTime.now());
 
-        Duration tempoDePermanencia = Duration.between(checkin.getCheckin(), checkin.getCheckout());
-        checkin.setTempoDePermanencia(tempoDePermanencia);
+        Duration duration = Duration.between(checkin.getCheckin(), checkin.getCheckout());
+
+        long horas = duration.toHours();
+        long minutos = duration.toMinutes();
+        long segundos = duration.toSeconds();
+
+        String tempoFormatado = String.format("%02d:%02d:%02d", horas, minutos,segundos);;
+
+        checkin.setTempoDePermanencia(tempoFormatado);
         checkinRepository.save(checkin);
 
         return new CheckoutResponse(

@@ -25,7 +25,7 @@ public class Checkin {
 
     private LocalDateTime checkout;
 
-    private Duration tempoDePermanencia;
+    private String tempoDePermanencia;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
