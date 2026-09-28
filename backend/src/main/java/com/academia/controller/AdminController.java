@@ -25,7 +25,6 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UsuarioResponseAdmin>> listarUsuario() {
         List<UsuarioResponseAdmin> listaDeUsersCadastrados = adminService.listarUserCadastrados();
-        System.out.println("funcionou");
         return ResponseEntity.ok(listaDeUsersCadastrados);
     }
 
