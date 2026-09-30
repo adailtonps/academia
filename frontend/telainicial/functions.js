@@ -153,6 +153,7 @@ export async function listarCheckinsTodos() {
               <p><strong>Checkout: </strong> ${formatarData(checkins.checkout)}</p>
               <p><strong>ID Checkin: </strong> ${checkins.id_checkin}</p>
               <p><strong>ID Usuário: </strong> ${checkins.id_user}</p>
+              <p><strong>Tempo de Permanência: </strong>${checkins.tempoDePermanencia}</p>
               <br></br>
             </div>`
         })
@@ -187,6 +188,7 @@ export async function listarCheckins() {
                 <p><strong>Checkout: </strong> ${formatarData(checkins.checkout)}</p>
                 <p><strong>ID Checkin: </strong> ${checkins.id_checkin}</p>
                 <p><strong>ID Usuário: </strong> ${checkins.id_user}</p>
+                <p><strong>Tempo de Permanência: </strong>${checkins.tempoDePermanencia}
                 <br><br>
             </div>`
         })
