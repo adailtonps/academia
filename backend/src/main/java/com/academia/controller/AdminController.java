@@ -37,8 +37,8 @@ public class AdminController {
     }
 
     @GetMapping("/me/listarCheckinsTodos")
-    public ResponseEntity<List<CheckinResponseDto>> listarCheckinsTodos(@AuthenticationPrincipal Usuario usuarioLogado){
-        List<CheckinResponseDto> checkinsPresentes = adminService.historicoCheckinTodos(usuarioLogado);
+    public ResponseEntity<List<HistoricoCheckinsCheckoutDTO>> listarCheckinsTodos(@AuthenticationPrincipal Usuario usuarioLogado){
+        List<HistoricoCheckinsCheckoutDTO> checkinsPresentes = adminService.historicoCheckinTodos(usuarioLogado);
         return ResponseEntity.ok(checkinsPresentes);
     }
 

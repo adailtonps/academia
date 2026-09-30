@@ -1,16 +1,12 @@
 package com.academia.controller;
 
-import com.academia.domain.Checkin;
 import com.academia.domain.Usuario;
 import com.academia.dto.*;
 import com.academia.repository.UsuarioRepository;
 import com.academia.response.AtualizacaoUsuarioResponse;
 import com.academia.service.UsuarioService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,8 +60,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/me/listarCheckins")
-    public ResponseEntity<List<CheckinResponseDto>> listarCheckins(@AuthenticationPrincipal Usuario usuarioLogado){
-        List<CheckinResponseDto> checkinsPresentes = usuarioService.historicoCheckins(usuarioLogado);
+    public ResponseEntity<List<HistoricoCheckinsCheckoutDTO>> listarCheckins(@AuthenticationPrincipal Usuario usuarioLogado){
+        List<HistoricoCheckinsCheckoutDTO> checkinsPresentes = usuarioService.historicoCheckins(usuarioLogado);
         return ResponseEntity.ok(checkinsPresentes);
     }
 
