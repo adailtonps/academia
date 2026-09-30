@@ -274,7 +274,8 @@ public class UsuarioService {
                 usuarioLogado.getId(),
                 criarCheckin.getId_checkin(),
                 criarCheckin.getCheckin(),
-                criarCheckin.getCheckout()
+                criarCheckin.getCheckout(),
+                criarCheckin.getTempoDePermanencia()
         );
     }
 
@@ -306,7 +307,8 @@ public class UsuarioService {
                 usuarioLogado.getId(),
                 checkin.getId_checkin(),
                 checkin.getCheckout(),
-                checkin.getCheckin()
+                checkin.getCheckin(),
+                checkin.getTempoDePermanencia()
         );
     }
 
@@ -322,7 +324,8 @@ public class UsuarioService {
                         usuarioLogado.getId(),
                         checkinPresent.getId_checkin(),
                         checkinPresent.getCheckin(),
-                        checkinPresent.getCheckout()
+                        checkinPresent.getCheckout(),
+                        checkinPresent.getTempoDePermanencia()
                         )
                 ).toList();
     }
