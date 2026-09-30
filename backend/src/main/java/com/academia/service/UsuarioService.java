@@ -236,7 +236,6 @@ public class UsuarioService {
             throw new RegraNegocioException("Conta inativa!");
         }
 
-        // Já existe um check-in sem checkout
         if(checkinAtivo.isPresent()){
             throw new RegraNegocioException("Você já tem um check-in ativo!");
         }
