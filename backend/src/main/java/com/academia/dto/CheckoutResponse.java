@@ -12,7 +12,7 @@ public class CheckoutResponse {
     private Long id_checkout;
     private LocalDateTime  checkout;
     private LocalDateTime  checkin;
-    private Duration tempoDePermanencia;
+    private String tempoDePermanencia;
 
     public CheckoutResponse(String nome, Long id_checkout, Long id_user, LocalDateTime checkin, LocalDateTime checkout, String tempoDePermanencia) {
         this.nome = nome;

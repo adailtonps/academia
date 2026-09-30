@@ -274,8 +274,7 @@ public class UsuarioService {
                 usuarioLogado.getId(),
                 criarCheckin.getId_checkin(),
                 criarCheckin.getCheckin(),
-                criarCheckin.getCheckout(),
-                criarCheckin.getTempoDePermanencia()
+                criarCheckin.getCheckout()
         );
     }
 
@@ -294,8 +293,8 @@ public class UsuarioService {
         Duration duration = Duration.between(checkin.getCheckin(), checkin.getCheckout());
 
         long horas = duration.toHours();
-        long minutos = duration.toMinutes();
-        long segundos = duration.toSeconds();
+        long minutos = duration.toMinutesPart();
+        long segundos = duration.toSecondsPart();
 
         String tempoFormatado = String.format("%02d:%02d:%02d", horas, minutos,segundos);;
 
@@ -312,13 +311,13 @@ public class UsuarioService {
         );
     }
 
-    public List<CheckinResponseDto> historicoCheckins(Usuario usuarioLogado) {
+    public List<HistoricoCheckinsCheckoutDTO> historicoCheckins(Usuario usuarioLogado) {
         List<Checkin> checkins = checkinRepository.findByUsuarioOrderByCheckinDesc(usuarioLogado);
         if(checkins.isEmpty()){
             throw new RegraNegocioException("Não há checkins cadastrados ainda!");
         }
         return checkins.stream()
-                .map(checkinPresent -> new CheckinResponseDto(
+                .map(checkinPresent -> new HistoricoCheckinsCheckoutDTO(
                         usuarioLogado.getNome(),
                         usuarioLogado.getEmail(),
                         usuarioLogado.getId(),
