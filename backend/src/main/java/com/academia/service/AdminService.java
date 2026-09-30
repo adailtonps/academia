@@ -133,7 +133,8 @@ public class AdminService {
                         checkinsPresent.getUsuario().getId(),
                         checkinsPresent.getId_checkin(),
                         checkinsPresent.getCheckin(),
-                        checkinsPresent.getCheckout()
+                        checkinsPresent.getCheckout(),
+                        checkinsPresent.getTempoDePermanencia()
                 )).toList();
     }
 

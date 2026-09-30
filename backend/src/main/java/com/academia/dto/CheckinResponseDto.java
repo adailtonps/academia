@@ -13,7 +13,7 @@ public class CheckinResponseDto {
     private Long id_checkin;
     private LocalDateTime checkin;
     private LocalDateTime checkout;
-    private Duration tempoDePermanencia;
+    private String tempoDePermanencia;
 
 
     public CheckinResponseDto(String nome, String email, Long id_user, Long id_checkin, LocalDateTime checkin, LocalDateTime checkout, String tempoDePermanencia) {
@@ -23,6 +23,6 @@ public class CheckinResponseDto {
         this.id_checkin = id_checkin;
         this.checkin = checkin;
         this.checkout = checkout;
-        this.tempoDePermanencia = tempoDePermanencia;
+        this.tempoDePermanencia =tempoDePermanencia;
     }
 }
