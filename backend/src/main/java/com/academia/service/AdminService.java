@@ -121,13 +121,13 @@ public class AdminService {
         );
     }
 
-    public List<CheckinResponseDto> historicoCheckinTodos(Usuario usuarioLogado){
+    public List<HistoricoCheckinsCheckoutDTO> historicoCheckinTodos(Usuario usuarioLogado){
         List<Checkin> checkins = checkinRepository.findAll();
         if(checkins.isEmpty()){
             throw new RegraNegocioException("Nenhum checkin cadastrado!");
         }
         return checkins.stream()
-                .map(checkinsPresent -> new CheckinResponseDto(
+                .map(checkinsPresent -> new HistoricoCheckinsCheckoutDTO(
                         checkinsPresent.getUsuario().getNome(),
                         checkinsPresent.getUsuario().getEmail(),
                         checkinsPresent.getUsuario().getId(),
