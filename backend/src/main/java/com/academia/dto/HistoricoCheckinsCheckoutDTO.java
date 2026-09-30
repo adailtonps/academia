@@ -1,7 +1,10 @@
 package com.academia.dto;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class HistoricoCheckinsCheckoutDTO {
     private String nome;
     private String email;
