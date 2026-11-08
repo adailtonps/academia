@@ -24,8 +24,9 @@ public class Assinatura {
     @ManyToOne
     private Usuario usuario;
 
-    @OneToOne
-    private Plano planoEscolhido;
+    @ManyToOne
+    @JoinColumn(name = "id_plano")
+    private Plano plano;
 
     private LocalDateTime dataInicio;
     private LocalDateTime dataVencimento;

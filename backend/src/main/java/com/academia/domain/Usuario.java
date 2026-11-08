@@ -84,8 +84,8 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario")
     private List<Checkin> checkin;
 
-    @OneToMany
-    private Assinatura assinatura;
+    @OneToMany(mappedBy = "usuario")
+    private List<Assinatura> assinaturas;
 
     public Usuario(String nome, String email, String matricula, String senha, Role role, StatusUsuario status_user, List<Checkin> checkin) {
         this.nome = nome;

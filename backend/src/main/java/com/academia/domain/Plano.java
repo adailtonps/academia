@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,20 +18,28 @@ public class Plano {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_plano")
-    private int id;
+    private Long idPlano;
 
+    @ManyToOne
+    @JoinColumn(name = "id_admin")
+    private Usuario admin;
+
+    @Column(unique = true)
     private String nomePlano;
+
     private String descricao;
     private BigDecimal valorPlano;
 
     @Enumerated(EnumType.STRING)
     private TipoPlano tipoPlano;
 
-    private LocalDateTime duracaoEmDias;
+    private Integer duracaoEmDias;
 
     @Enumerated(EnumType.STRING)
     private StatusPlano statusPlano;
 
-    @OneToMany
-    private Assinatura assinatura;
+    @OneToMany(mappedBy = "plano")
+    private List<Assinatura> assinatura;
+
+    private boolean possuiPersonal;
 }
