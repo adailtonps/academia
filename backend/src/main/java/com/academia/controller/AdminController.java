@@ -11,12 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class AdminController {
     private final UsuarioService usuarioService;
     private final UsuarioRepository usuarioRepository;
@@ -26,7 +26,6 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UsuarioResponseAdmin>> listarUsuario() {
         List<UsuarioResponseAdmin> listaDeUsersCadastrados = adminService.listarUserCadastrados();
-
         return ResponseEntity.ok(listaDeUsersCadastrados);
     }
 

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface PlanoRepository extends JpaRepository<Plano, Integer> {
+public interface PlanoRepository extends JpaRepository<Plano, Long> {
     boolean existsByNomePlanoAndValorPlanoAndDuracaoEmDiasAndPossuiPersonal(String nomePlano, BigDecimal valorPlano,
                                                                             Integer duracaoEmDias, boolean possuiPersonal);
 }

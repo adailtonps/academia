@@ -4,6 +4,7 @@ package com.academia.controller;
 import com.academia.domain.Usuario;
 import com.academia.dto.CadastroPlanoDto;
 import com.academia.dto.CadastroPlanoResponseDto;
+import com.academia.dto.MensageReturnDto;
 import com.academia.repository.PlanoRepository;
 import com.academia.service.PlanoService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("plano")
+@RequestMapping("/plano")
 public class PlanoController {
-    private final PlanoRepository planoRepository;
     private final PlanoService planoService;
 
     @PostMapping
@@ -30,5 +30,13 @@ public class PlanoController {
                                                                    @AuthenticationPrincipal Usuario adminLogado){
         CadastroPlanoResponseDto planoCadastrado = planoService.cadastrarPlano(cadastroPlanoDto, adminLogado);
         return ResponseEntity.status(HttpStatus.CREATED).body(planoCadastrado);
+    }
+
+    @PostMapping("/assinatura")
+    @PreAuthorize("hasRole('USER')")
+    public MensageReturnDto escolherPlano(@RequestBody Long idPlano,
+                                          @AuthenticationPrincipal Usuario userLogado){
+        planoService.escolherPlano(idPlano, userLogado);
+        return new MensageReturnDto("Seu pedido foi escolhido, efetue o pagamento!");
     }
 }

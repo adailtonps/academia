@@ -6,6 +6,7 @@ import com.academia.enums.StatusPlano;
 import com.academia.enums.TipoPlano;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,19 +26,19 @@ public class CadastroPlanoDto {
     @NotBlank(message = "Descrição do plano obrigatória!")
     private String descricao;
 
-    @NotBlank(message = "Valor do plano obrigatório!")
+    @NotNull(message = "Valor do plano obrigatório!")
     private BigDecimal valorPlano;
 
-    @NotBlank(message = "Tipo do plano obrigatório!")
+    @NotNull(message = "Tipo do plano obrigatório!")
     private TipoPlano tipoPlano;
 
-    @NotBlank(message = "Digite se o plano vai estar ativo ou inativo!")
+    @NotNull(message = "Digite se o plano vai estar ativo ou inativo!")
     private StatusPlano statusPlano;
 
-    @NotBlank(message = "Duração do plano em dias obrigatório!")
+    @NotNull(message = "Duração do plano em dias obrigatório!")
     private Integer duracaoEmDias;
 
-    @NotBlank(message = "Informe se o plano inclui personal!")
+    @NotNull(message = "Informe se o plano inclui personal!")
     private boolean possuiPersonal;
 
 }

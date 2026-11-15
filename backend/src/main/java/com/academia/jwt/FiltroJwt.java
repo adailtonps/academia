@@ -63,7 +63,8 @@ public class FiltroJwt extends OncePerRequestFilter {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Token inválido!");
+                e.printStackTrace();
+                System.out.println("Token inválido!"+e.getMessage());
             }
         }
         filterChain.doFilter(request, response);
