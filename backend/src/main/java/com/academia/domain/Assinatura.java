@@ -40,4 +40,6 @@ public class Assinatura {
     @Enumerated(EnumType.STRING)
     private StatusAssinatura statusAssinatura;
 
+    private String asaasSubscriptionId;
+
 }

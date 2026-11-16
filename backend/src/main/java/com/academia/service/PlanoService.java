@@ -104,7 +104,7 @@ public class PlanoService {
     }
 
     @Transactional
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 60000)
     public void AssinaturaSchedelur(){
         LocalDateTime dataHoraAgora = LocalDateTime.now();
         List<Assinatura> assinaturasPendentes = assinaturaRepository.findByStatusAssinaturaAndDataLimitePagamentoBefore(
